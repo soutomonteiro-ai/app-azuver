@@ -136,6 +136,29 @@ function isCommandView(viewAs) {
 }
 
 // ---------------------------------------------------------------------
+// Validação de formulários — mensagem de erro visível (nunca só foco
+// silencioso) quando campos obrigatórios estão vazios.
+// ---------------------------------------------------------------------
+
+function buildRequiredFieldsMessage(labels) {
+  if (labels.length === 1) return `Preencha ${labels[0]} antes de registrar.`;
+  const allButLast = labels.slice(0, -1).join(", ");
+  const last = labels[labels.length - 1];
+  return `Preencha ${allButLast} e ${last} antes de registrar.`;
+}
+
+// fields: [{ el, label }] em ordem de exibição no formulário.
+// Retorna null se tudo válido, ou { message, firstEmptyEl } caso falte algo.
+function validateRequiredFields(fields) {
+  const missing = fields.filter((f) => !f.el.value.trim());
+  if (missing.length === 0) return null;
+  return {
+    message: buildRequiredFieldsMessage(missing.map((f) => f.label)),
+    firstEmptyEl: missing[0].el
+  };
+}
+
+// ---------------------------------------------------------------------
 // Formulário: Nova Injeção
 // ---------------------------------------------------------------------
 
@@ -169,11 +192,28 @@ formNovaInjecao.addEventListener("submit", async (e) => {
   novaInjecaoMsg.textContent = "";
   novaInjecaoMsg.classList.remove("error");
 
-  const gdh = document.getElementById("inGdh").value.trim();
-  const origem = document.getElementById("inOrigem").value.trim();
+  const gdhEl = document.getElementById("inGdh");
+  const origemEl = document.getElementById("inOrigem");
+  const resumoEl = document.getElementById("inResumo");
+
+  const requiredFieldsValidation = validateRequiredFields([
+    { el: gdhEl, label: "o GDH" },
+    { el: origemEl, label: "a Origem" },
+    { el: resumoEl, label: "o resumo da situação" }
+  ]);
+
+  if (requiredFieldsValidation) {
+    novaInjecaoMsg.textContent = requiredFieldsValidation.message;
+    novaInjecaoMsg.classList.add("error");
+    requiredFieldsValidation.firstEmptyEl.focus();
+    return;
+  }
+
+  const gdh = gdhEl.value.trim();
+  const origem = origemEl.value.trim();
   const autor = document.getElementById("inAutor").value.trim();
   const urgencia = formNovaInjecao.querySelector('input[name="urgencia"]:checked').value;
-  const resumo = document.getElementById("inResumo").value.trim();
+  const resumo = resumoEl.value.trim();
 
   const celulas = {};
   let algumaSelecionada = false;
@@ -385,9 +425,26 @@ formSimula.addEventListener("submit", async (e) => {
   simulaMsg.textContent = "";
   simulaMsg.classList.remove("error");
 
-  const reuniao = document.getElementById("simReuniao").value.trim();
-  const gdh = document.getElementById("simGdh").value.trim();
-  const decisao = document.getElementById("simDecisao").value.trim();
+  const reuniaoEl = document.getElementById("simReuniao");
+  const gdhEl = document.getElementById("simGdh");
+  const decisaoEl = document.getElementById("simDecisao");
+
+  const requiredFieldsValidation = validateRequiredFields([
+    { el: reuniaoEl, label: "a Reunião" },
+    { el: gdhEl, label: "o GDH" },
+    { el: decisaoEl, label: "a Decisão-chave" }
+  ]);
+
+  if (requiredFieldsValidation) {
+    simulaMsg.textContent = requiredFieldsValidation.message;
+    simulaMsg.classList.add("error");
+    requiredFieldsValidation.firstEmptyEl.focus();
+    return;
+  }
+
+  const reuniao = reuniaoEl.value.trim();
+  const gdh = gdhEl.value.trim();
+  const decisao = decisaoEl.value.trim();
   const autor = document.getElementById("simAutor").value.trim();
 
   const impactos = [];
