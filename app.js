@@ -1,5 +1,5 @@
 // =========================================================================
-// Painel EM 6 — app.js
+// Painel EM 3 — app.js
 // Vanilla JS + Firebase (modular SDK via CDN). Sem build step.
 // =========================================================================
 
@@ -113,7 +113,7 @@ tabs.forEach((tab) => {
 // Seletor global "Ver como"
 // ---------------------------------------------------------------------
 
-const VIEWAS_KEY = "painelEm6_verComo";
+const VIEWAS_KEY = "painelEm3_verComo";
 const viewAsSelect = document.getElementById("viewAsSelect");
 
 function getViewAs() {

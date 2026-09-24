@@ -1,6 +1,6 @@
-# Painel EM 6 · AZUVER
+# Painel EM 3 · AZUVER
 
-Ferramenta de apoio para um Estado-Maior Conjunto (EM 6, lado **VERMELHO**)
+Ferramenta de apoio para um Estado-Maior Conjunto (EM 3, lado **VERMELHO**)
 durante o exercício de simulação **AZUVER**, na ECEME (Escola de Comando e
 Estado-Maior do Exército).
 
