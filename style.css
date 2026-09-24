@@ -455,7 +455,7 @@ textarea { resize: vertical; min-height: 44px; }
 }
 
 /* ---------------------------------------------------------------------- */
-/* Cards list (injeções / símulas)                                       */
+/* Cards list (injeções / súmulas)                                       */
 /* ---------------------------------------------------------------------- */
 
 .cards-list { display: flex; flex-direction: column; gap: 10px; }
@@ -567,7 +567,7 @@ textarea { resize: vertical; min-height: 44px; }
 }
 
 /* ---------------------------------------------------------------------- */
-/* Símulas                                                                 */
+/* Súmulas                                                                 */
 /* ---------------------------------------------------------------------- */
 
 .impactos-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }

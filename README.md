@@ -162,12 +162,12 @@ usar o painel — não é necessário nenhum cadastro ou login manual.
    selecionadas, cada uma com seu próprio texto de orientação.
 2. **Injeções DIREX** — lista em tempo real, filtrável por status e pelo
    seletor global "Ver como".
-3. **Símulas de Reunião** — registra decisões de reunião com impactos por
+3. **Súmulas de Reunião** — registra decisões de reunião com impactos por
    célula; feed cronológico reverso.
 4. **Painel do Comando** — KPIs e quadro Kanban por status.
 
 O seletor global **"Ver como"** (fixo no topo) filtra o que aparece nas
-abas de Injeções e Símulas: ao escolher uma célula específica, só aparecem
+abas de Injeções e Súmulas: ao escolher uma célula específica, só aparecem
 itens endereçados a ela e apenas o texto escrito especificamente para
 aquela célula. As opções "Todas as células" e "ComTO / ChEM" mostram tudo,
 sem filtragem. A escolha fica salva no `localStorage` do navegador.

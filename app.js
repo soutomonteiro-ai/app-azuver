@@ -376,7 +376,7 @@ function escapeHtml(str) {
 }
 
 // ---------------------------------------------------------------------
-// Símulas de Reunião
+// Súmulas de Reunião
 // ---------------------------------------------------------------------
 
 const impactosList = document.getElementById("impactosList");
@@ -467,12 +467,12 @@ formSimula.addEventListener("submit", async (e) => {
       createdAt: serverTimestamp()
     });
 
-    simulaMsg.textContent = "Símula registrada.";
+    simulaMsg.textContent = "Súmula registrada.";
     formSimula.reset();
     impactosList.innerHTML = "";
     impactosList.appendChild(buildImpactoRow());
   } catch (err) {
-    console.error("Erro ao registrar símula:", err);
+    console.error("Erro ao registrar súmula:", err);
     simulaMsg.textContent = "Erro ao registrar. Tente novamente.";
     simulaMsg.classList.add("error");
   } finally {
@@ -491,7 +491,7 @@ function renderSimulas() {
   simulasListEl.innerHTML = "";
 
   if (items.length === 0) {
-    simulasListEl.innerHTML = '<p class="empty-state">Nenhuma símula encontrada para este filtro.</p>';
+    simulasListEl.innerHTML = '<p class="empty-state">Nenhuma súmula encontrada para este filtro.</p>';
     return;
   }
 
@@ -630,7 +630,7 @@ function startListeners() {
       renderSimulas();
     },
     (err) => {
-      console.error("Erro no listener de símulas:", err);
+      console.error("Erro no listener de súmulas:", err);
       setConn("offline");
     }
   );
