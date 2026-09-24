@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Painel EM 6 · AZUVER</title>
+<meta name="description" content="Painel EM 6 — ferramenta de apoio ao Estado-Maior Conjunto (lado VERMELHO) durante o exercício de simulação AZUVER, ECEME.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__brand">
+    <span class="brand__title">PAINEL EM 6</span>
+    <span class="brand__tag">AZUVER · ECEME</span>
+  </div>
+  <div class="topbar__badge badge--vermelho">LADO VERMELHO</div>
+
+  <div class="topbar__viewas">
+    <label for="viewAsSelect" class="viewas__label">Ver como</label>
+    <select id="viewAsSelect" class="viewas__select">
+      <option value="todas">Todas as células</option>
+      <option value="comto">ComTO / ChEM</option>
+      <option value="d1">D-1 Pessoal</option>
+      <option value="d2">D-2 Inteligência</option>
+      <option value="d3">D-3 Operações</option>
+      <option value="d4">D-4 Logística</option>
+      <option value="d5">D-5 Planejamento</option>
+      <option value="d6">D-6 C2/Ciber</option>
+      <option value="d7d8">D-7/D-8 ComSoc/OpInfo</option>
+      <option value="d9">D-9 Assuntos Civis</option>
+      <option value="d10">D-10 Finanças</option>
+    </select>
+  </div>
+
+  <div class="topbar__status">
+    <span id="connStatus" class="conn conn--connecting" title="Status da conexão">●</span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab tab--active" data-tab="nova">Nova Injeção</button>
+  <button class="tab" data-tab="direx">Injeções DIREX</button>
+  <button class="tab" data-tab="simulas">Símulas de Reunião</button>
+  <button class="tab" data-tab="comando">Painel do Comando</button>
+</nav>
+
+<main id="app">
+
+  <!-- ================= TAB: NOVA INJEÇÃO ================= -->
+  <section class="view view--active" id="view-nova">
+    <form id="formNovaInjecao" class="card form-injecao" autocomplete="off">
+      <h2 class="section-title">Registrar Injeção</h2>
+
+      <div class="grid grid--3">
+        <div class="field">
+          <label for="inGdh">GDH</label>
+          <input type="text" id="inGdh" class="mono" placeholder="ex: 241430ZSET26" required>
+        </div>
+        <div class="field">
+          <label for="inOrigem">Origem</label>
+          <input type="text" id="inOrigem" placeholder="ex: Célula de Controle / D-3" required>
+        </div>
+        <div class="field">
+          <label for="inAutor">Autor (opcional)</label>
+          <input type="text" id="inAutor" placeholder="ex: Cap Souto">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Urgência</label>
+        <div class="urgencia-group" id="urgenciaGroup">
+          <label class="urgencia-opt urgencia-opt--critico">
+            <input type="radio" name="urgencia" value="critico" checked>
+            <span>Crítico</span>
+          </label>
+          <label class="urgencia-opt urgencia-opt--importante">
+            <input type="radio" name="urgencia" value="importante">
+            <span>Importante</span>
+          </label>
+          <label class="urgencia-opt urgencia-opt--informativo">
+            <input type="radio" name="urgencia" value="informativo">
+            <span>Informativo</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="inResumo">Resumo da situação</label>
+        <textarea id="inResumo" rows="3" placeholder="Descreva sucintamente o fato/injeção..." required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Roteamento por célula</label>
+        <p class="hint">Marque as células envolvidas e descreva o que cada uma precisa fazer ou saber.</p>
+        <div class="celulas-grid" id="celulasGridNova"><!-- gerado via JS --></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Registrar e Rotear</button>
+        <span id="novaInjecaoMsg" class="form-msg"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- ================= TAB: INJEÇÕES DIREX ================= -->
+  <section class="view" id="view-direx">
+    <div class="toolbar">
+      <h2 class="section-title">Injeções DIREX</h2>
+      <div class="toolbar__filters">
+        <label for="statusFilter" class="toolbar__label">Status</label>
+        <select id="statusFilter" class="select-compact">
+          <option value="todos">Todos</option>
+          <option value="pendente">Pendente</option>
+          <option value="analise">Em Análise</option>
+          <option value="decisao">Decisão Necessária</option>
+          <option value="pronta">Pronta / Expedida</option>
+        </select>
+      </div>
+    </div>
+    <div id="direxList" class="cards-list">
+      <p class="empty-state">Carregando injeções...</p>
+    </div>
+  </section>
+
+  <!-- ================= TAB: SÍMULAS DE REUNIÃO ================= -->
+  <section class="view" id="view-simulas">
+    <form id="formSimula" class="card form-simula" autocomplete="off">
+      <h2 class="section-title">Registrar Símula de Reunião</h2>
+
+      <div class="grid grid--3">
+        <div class="field">
+          <label for="simReuniao">Reunião</label>
+          <input type="text" id="simReuniao" placeholder="ex: Reunião de Coordenação 1300" required>
+        </div>
+        <div class="field">
+          <label for="simGdh">GDH</label>
+          <input type="text" id="simGdh" class="mono" placeholder="ex: 241300ZSET26" required>
+        </div>
+        <div class="field">
+          <label for="simAutor">Autor (opcional)</label>
+          <input type="text" id="simAutor" placeholder="ex: Maj Fulano">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="simDecisao">Decisão-chave</label>
+        <textarea id="simDecisao" rows="2" placeholder="Qual foi a decisão tomada?" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Impactos por célula</label>
+        <div id="impactosList" class="impactos-list"><!-- linhas dinâmicas --></div>
+        <button type="button" id="btnAddImpacto" class="btn btn--ghost btn--small">+ adicionar impacto</button>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Registrar Símula</button>
+        <span id="simulaMsg" class="form-msg"></span>
+      </div>
+    </form>
+
+    <h3 class="section-subtitle">Histórico de Símulas</h3>
+    <div id="simulasList" class="cards-list">
+      <p class="empty-state">Carregando símulas...</p>
+    </div>
+  </section>
+
+  <!-- ================= TAB: PAINEL DO COMANDO ================= -->
+  <section class="view" id="view-comando">
+    <h2 class="section-title">Painel do Comando</h2>
+
+    <div class="kpis" id="kpis">
+      <div class="kpi">
+        <span class="kpi__value" id="kpiTotal">0</span>
+        <span class="kpi__label">Total de Injeções</span>
+      </div>
+      <div class="kpi kpi--critico">
+        <span class="kpi__value" id="kpiCriticas">0</span>
+        <span class="kpi__label">Críticas em Aberto</span>
+      </div>
+      <div class="kpi kpi--pendente">
+        <span class="kpi__value" id="kpiPendentes">0</span>
+        <span class="kpi__label">Pendentes</span>
+      </div>
+      <div class="kpi kpi--pronta">
+        <span class="kpi__value" id="kpiProntas">0</span>
+        <span class="kpi__label">Prontas</span>
+      </div>
+    </div>
+
+    <div class="kanban" id="kanban">
+      <div class="kanban__col" data-status="pendente">
+        <h3 class="kanban__title">Pendente</h3>
+        <div class="kanban__cards" id="kanbanPendente"></div>
+      </div>
+      <div class="kanban__col" data-status="analise">
+        <h3 class="kanban__title">Em Análise</h3>
+        <div class="kanban__cards" id="kanbanAnalise"></div>
+      </div>
+      <div class="kanban__col" data-status="decisao">
+        <h3 class="kanban__title">Decisão Necessária</h3>
+        <div class="kanban__cards" id="kanbanDecisao"></div>
+      </div>
+      <div class="kanban__col" data-status="pronta">
+        <h3 class="kanban__title">Pronta / Expedida</h3>
+        <div class="kanban__cards" id="kanbanPronta"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<template id="tpl-celula-block">
+  <div class="celula-block">
+    <label class="celula-block__check">
+      <input type="checkbox" class="celula-check">
+      <span class="celula-block__abrev"></span>
+      <span class="celula-block__nome"></span>
+    </label>
+    <textarea class="celula-block__texto" rows="2" placeholder="O que esta célula precisa fazer/saber..." hidden></textarea>
+  </div>
+</template>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
